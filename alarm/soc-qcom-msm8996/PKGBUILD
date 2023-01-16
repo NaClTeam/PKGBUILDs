@@ -1,0 +1,39 @@
+# Maintainer: Ookiineko <chiisaineko@protonmail.com>
+# Contributor: Yassine Oudjana (Tooniis) <y.oudjana@protonmail.com>
+pkgbase=soc-qcom-msm8996
+pkgver=1
+pkgrel=4
+pkgdesc="Common package for Qualcomm MSM8996 devices"
+url="https://postmarketos.org"
+license=('BSD')
+arch=('aarch64')
+_ucm_commit="9f2fd084eccbb01c5bffa6dbc50dcd2b116371d8"
+source=("alsa-ucm-conf-${_ucm_commit}.tar.gz::https://gitlab.com/msm8996-mainline/alsa-ucm-conf/-/archive/${_ucm_commit}/alsa-ucm-conf-${_ucm_commit}.tar.gz"
+        90-feedbackd-spmi-haptics.rules)
+sha256sums=('325c855cc3227b87acd22fe77ca4d4b2b99ffc8f155648e47a64bbfe10027355'
+            '897f2f5533644668b63e5fbff917e050af1cfb7472553c3ee520388c932ab6f9')
+
+_package() {
+	install -Dm644 "${srcdir}"/90-feedbackd-spmi-haptics.rules \
+		"${pkgdir}"/usr/lib/udev/rules.d/90-feedbackd-spmi-haptics.rules
+}
+
+_package-nonfree_firmware() {
+	pkgdesc="Non-free firmware for GPU and modem"
+	depends=('linux-firmware-qcom')
+}
+
+_package-ucm() {
+	provides=('alsa-ucm-conf')
+
+	# install audio config files
+        mkdir -p "${pkgdir}"/usr/share/alsa/ucm2
+        cp -r "${srcdir}/alsa-ucm-conf-${_ucm_commit}"/ucm2 "${pkgdir}"/usr/share/alsa/
+}
+
+pkgname=("${pkgbase}" "${pkgbase}-nonfree_firmware" "${pkgbase}-ucm")
+for _p in ${pkgname[@]}; do
+  eval "package_${_p}() {
+    _package${_p#${pkgbase}}
+  }"
+done
