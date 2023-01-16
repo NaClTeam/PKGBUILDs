@@ -1,0 +1,48 @@
+# Maintainer: Ookiineko <chiisaineko@protonmail.com>
+# Contributor: Yassine Oudjana (Tooniis) <y.oudjana@protonmail.com>
+
+pkgbase=device-xiaomi-scorpio
+pkgdesc="Xiaomi Mi Note 2"
+pkgver=3
+pkgrel=4
+url='https://postmarketos.org'
+license=('MIT')
+arch=('aarch64')
+depends=('linux-qcom-msm8996'
+	 'mesa'
+	 'android-tools'
+	 'soc-qcom-msm8996'
+	 'soc-qcom-msm8996-ucm')
+source=('gpu-nobin.sh'
+	'pointercal'
+	'phoc.ini')
+sha256sums=('e61cc6ea41af38b005701c7c5c455639e8be1959807e24a8b115ec26f5500c5f'
+            '0ad5e35ad4ed0d963ce7a905270d4a0caca1de9a1ce3bfba6e37c7484fd54c63'
+            '0e2c784aff53b2c265e035a123ae38a7ebb64afddb23124b144465f85d593892')
+
+_package() {
+	install -D -m644 "${srcdir}"/pointercal \
+		"${pkgdir}"/etc/pointercal
+
+	install -D -m644 "${srcdir}"/gpu-nobin.sh \
+		"${pkgdir}"/etc/profile.d/gpu-nobin.sh
+}
+
+_package-nonfree_firmware() {
+	pkgdesc="GPU/Modem/Venus/ADSP/SLPI/WiFi/Bluetooth Firmware"
+	depends=('firmware-xiaomi-scorpio'
+		 'linux-firmware'
+		 'soc-qcom-msm8996-nonfree_firmware')
+}
+
+_package-phosh() {
+	install -Dm644 "${srcdir}"/phoc.ini \
+		"${pkgdir}"/etc/phosh/phoc.ini
+}
+
+pkgname=("${pkgbase}" "${pkgbase}-nonfree_firmware" "${pkgbase}-phosh")
+for _p in ${pkgname[@]}; do
+  eval "package_${_p}() {
+    _package${_p#${pkgbase}}
+  }"
+done
