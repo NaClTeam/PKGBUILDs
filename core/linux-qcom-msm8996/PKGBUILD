@@ -22,7 +22,7 @@ source=("${url}/-/archive/${_tag}/${_srcname}.tar.gz"
         '60-linux.hook'
         '90-linux.hook')
 md5sums=('3da785629815f16ce8bfc1bdcc6f3661'
-         '0b7bdf875975cd918d98773a2ac87493'
+         '85b05e909b1e005dcdaa9f4655e733c7'
          '41cb5fef62715ead2dd109dbea8413d6'
          '0a5f16bfec6ad982a2f6782724cca8ba'
          '3dc88030a8f2f5a5f97266d99b149f77')
